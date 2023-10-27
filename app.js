@@ -21,6 +21,21 @@ app.get('/therapists', async (req, res) => {
     res.json(list)
   })
 
+
+
+app.get('/getsessions', async (req, res) =>{
+  const {id, startdate, enddate} = req.query;
+  const idNumber = Number(id);
+  const rows = await dbManager.getSessions(idNumber, startdate, enddate)
+  res.json(rows)
+})
+
+
+   
+  
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+
