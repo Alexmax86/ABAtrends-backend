@@ -7,15 +7,7 @@ const seed = require('./seed')
 
 function queryWrapper(query, params = []){
   return new Promise((resolve, reject) => {
-    db.all(query, params, (err, rows) => {      
-      if (err) {        
-        reject(err);
-      } else {      
-        console.log(query)
-        console.log(params)
-        resolve(rows);
-      }
-    });
+    db.all(query, params, (err, rows) => {err ? reject(err) : resolve(rows)});
   });
 }
 
@@ -43,20 +35,13 @@ async function getTherapists() {
   }
 
   async function getSessions(id, startDate, endDate){
-    const query = `SELECT * FROM Sessions WHERE patient_id = ? AND date BETWEEN ? AND ?`
-    const params = [id, startDate, endDate];
-    return new Promise((resolve, reject) =>{
-      db.all(query, params, (err, rows) => {      
-        if (err) {        
-          console.log(err);
-          reject(err)
-        } else {      
-          console.log(rows)
-          //console.log(params)
-          resolve(rows)
-        }})
-    })
-    
+    const query = `SELECT * FROM Sessions WHERE patient_id IN (${id.map(id => '?').join(',')}) AND date BETWEEN ? AND ? ORDER BY date`    
+    const params = [...id, startDate, endDate];
+    try{
+      const rows = await queryWrapper(query, params)      
+      return rows
+    }
+    catch(e){return e}
   }
 
   function close(){

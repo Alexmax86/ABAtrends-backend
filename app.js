@@ -21,13 +21,20 @@ app.get('/therapists', async (req, res) => {
     res.json(list)
   })
 
+  app.get('/patients', async (req, res) => {
+    const list = await dbManager.getPatients()
+    res.json(list)
+  })
+
 
 
 app.get('/getsessions', async (req, res) =>{
   const {id, startdate, enddate} = req.query;
-  const idNumber = Number(id);
-  const rows = await dbManager.getSessions(idNumber, startdate, enddate)
+  
+  const idNumbers = id.split(',').map(id => parseInt(id));
+  const rows = await dbManager.getSessions(idNumbers, startdate, enddate)
   res.json(rows)
+  
 })
 
 

@@ -4,13 +4,13 @@ const faker = require('faker');
 function generateRandomDate() {
   const end = new Date();
   const start = new Date();
-  start.setMonth(end.getMonth() - 3);
+  start.setMonth(end.getMonth() - 12);
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
 // Generate therapy sessions
 const therapySessions = [];
-for (let i = 0; i < 50; i++) { // You can adjust the number of sessions
+for (let i = 0; i < 500; i++) { // You can adjust the number of sessions
   const therapist_id = faker.datatype.number({ min: 1, max: 6 });
   const patient_id = faker.datatype.number({ min: 1, max: 6 });
   const date = generateRandomDate();
