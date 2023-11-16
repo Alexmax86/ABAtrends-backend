@@ -16,12 +16,13 @@ app.get('/', (req, res) => {
   res.json([{a:3}])
 })
 
-app.get('/therapists', async (req, res) => {
+app.get('/gettherapists', async (req, res) => {
+    console.log("Gettherapists request received")
     const list = await dbManager.getTherapists()
     res.json(list)
   })
 
-  app.get('/patients', async (req, res) => {
+  app.get('/getpatients', async (req, res) => {
     const list = await dbManager.getPatients()
     res.json(list)
   })
@@ -29,11 +30,38 @@ app.get('/therapists', async (req, res) => {
 
 
 app.get('/getsessions', async (req, res) =>{
-  const {id, startdate, enddate} = req.query;
+  const {patientsids, therapistsids, startdate, enddate} = req.query;
   
-  const idNumbers = id.split(',').map(id => parseInt(id));
-  const rows = await dbManager.getSessions(idNumbers, startdate, enddate)
-  res.json(rows)
+  const parsedPIds = patientsids.split(',').map(id => parseInt(id));
+  const parsedTIds = therapistsids.split(',').map(id => parseInt(id));
+
+  const rows = await dbManager.getSessions(parsedPIds, parsedTIds, startdate, enddate)
+
+  //JS Reducer used to sort array by patient_id
+  const groupedData = rows.reduce((acc, session) => {
+    //Takes in consideration the patient_id of current object
+    const key = session.patient_id;
+    //Looks in the accumulator's nested arrays to find if any object contains same patient_id.
+    const group = acc.find(item => item && item[0] && item[0].patient_id === key);
+    //If patient_id is found push the current object in that nested array
+    //If not create new nested array within the accumulator
+    if (group) {
+      group.push(session);
+    } else {
+      acc.push([session]);
+    }
+    
+    return acc;
+    //Accumulator initial value is an empty array
+  }, []);
+  console.log("*******************************************************************************************")
+  console.log(groupedData)
+  
+
+
+
+  
+  res.json(groupedData)
   
 })
 
