@@ -34,10 +34,19 @@ db.serialize(() => {
         email TEXT UNIQUE,
         age INTEGER
     );`);
-
+    
     patients.map(t => {
         db.run(`INSERT INTO Patients (name, surname, email, age) VALUES (?, ?, ?, ?)`, [t.name, t.surname, t.email, t.age])
     })
+
+    //TRAINING TYPES TABLE
+    db.run(`DROP TABLE IF EXISTS Training_types`)
+
+    db.run(`CREATE TABLE Training_types (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        description TEXT        
+    );`);
 
     //SESSIONS TABLE
     db.run(`DROP TABLE IF EXISTS Sessions`)
@@ -46,12 +55,13 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         therapist_id INTEGER,
         patient_id INTEGER,
+        training_type_id INTEGER,
         date DATE,
         responses INTEGER
     );`);
 
     sessions.map(t => {
-        db.run(`INSERT INTO Sessions (therapist_id, patient_id, date, responses) VALUES (?, ?, ?, ?)`, [t.therapist_id, t.patient_id, t.date, t.responses])
+        db.run(`INSERT INTO Sessions (therapist_id, patient_id, training_type_id, date, responses) VALUES (?, ?, ?, ?, ?)`, [t.therapist_id, t.patient_id, 0, t.date, t.responses])
     })
     })
 

@@ -1,6 +1,6 @@
 const faker = require('faker');
 
-// Function to generate a random date in the last 3 months
+// Function to generate a random date in the last 12 months
 function generateRandomDate() {
   const end = new Date();
   const start = new Date();
