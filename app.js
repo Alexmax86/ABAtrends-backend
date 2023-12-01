@@ -9,15 +9,18 @@ const dbManager = require('./database/dbmanager')
 //(async () => await console.log(asyncdb.getTherapists()))()
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
   });
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json([{a:3}])
 })
 
 app.get('/gettherapists', async (req, res) => {
-    console.log("Gettherapists request received")
+    
     const list = await dbManager.getTherapists()
     res.json(list)
   })
@@ -27,15 +30,20 @@ app.get('/gettherapists', async (req, res) => {
     res.json(list)
   })
 
+  app.get('/gettrainingtypes', async (req, res) => {
+    const list = await dbManager.getTrainingTypes()
+    res.json(list)
+  })
+
 
 
 app.get('/getsessions', async (req, res) =>{
-  const {patientsids, therapistsids, startdate, enddate} = req.query;
+  const {patientsids, therapistsids, startdate, enddate, trainingtype} = req.query;
   
   const parsedPIds = patientsids.split(',').map(id => parseInt(id));
   const parsedTIds = therapistsids.split(',').map(id => parseInt(id));
 
-  const rows = await dbManager.getSessions(parsedPIds, parsedTIds, startdate, enddate)
+  const rows = await dbManager.getSessions(parsedPIds, parsedTIds, trainingtype, startdate, enddate)
 
   //JS Reducer used to sort array by patient_id
   const groupedData = rows.reduce((acc, session) => {
@@ -54,14 +62,26 @@ app.get('/getsessions', async (req, res) =>{
     return acc;
     //Accumulator initial value is an empty array
   }, []);
-  console.log("*******************************************************************************************")
-  console.log(groupedData)
-  
-
-
-
-  
+    
   res.json(groupedData)
+  
+})
+
+app.post('/record', async (req, res) =>{
+  
+  try {    
+    
+       
+    const result = dbManager.insertRecord(req.body)
+    //throw new Error('Internal server error occurred');
+    
+    res.sendStatus(200);
+  } catch (error) {
+      // Send a 500 status code with an error message
+      console.log(error)
+      res.status(500).send('Internal server error: ' + error.message);
+  }
+  
   
 })
 

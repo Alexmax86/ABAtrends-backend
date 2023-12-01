@@ -19,5 +19,6 @@ const trainingTypes = [
         name: "Non-verbal communication",
         description: "The ability of using  gestures, facial expressions, body language, and other cues apart to convey messages, ideas, or information"    
     },
-
 ]
+
+module.exports = trainingTypes

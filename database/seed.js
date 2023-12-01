@@ -2,6 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const dbManager = require ('./dbmanager')
 const therapists = require('./data/therapists')
 const patients = require('./data/patients')
+const trainingTypes= require('./data/trainingtypes')
 const db = new sqlite3.Database("./database/db.sqlite", (err) => {if(err){console.log("Error: " + err)}})
 const sessions = require('./data/sessions')
 
@@ -48,6 +49,10 @@ db.serialize(() => {
         description TEXT        
     );`);
 
+    trainingTypes.map(t => {
+        db.run(`INSERT INTO Training_types (name, description) VALUES (?, ?)`, [t.name, t.description])
+    })
+
     //SESSIONS TABLE
     db.run(`DROP TABLE IF EXISTS Sessions`)
 
@@ -61,7 +66,7 @@ db.serialize(() => {
     );`);
 
     sessions.map(t => {
-        db.run(`INSERT INTO Sessions (therapist_id, patient_id, training_type_id, date, responses) VALUES (?, ?, ?, ?, ?)`, [t.therapist_id, t.patient_id, 0, t.date, t.responses])
+        db.run(`INSERT INTO Sessions (therapist_id, patient_id, training_type_id, date, responses) VALUES (?, ?, ?, ?, ?)`, [t.therapist_id, t.patient_id, t.training_type_id, t.date, t.responses])
     })
     })
 
