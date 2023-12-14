@@ -7,6 +7,7 @@ function queryWrapper(query, params = []){
     db.all(query, params, (err, rows) => {err ? reject(err) : resolve(rows)});
   });
 }
+
 function queryWrapperCreate(query, params = []){
   return new Promise((resolve, reject) => {
     db.run(query, params, function (err) {      

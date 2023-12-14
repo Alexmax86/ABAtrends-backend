@@ -19,8 +19,7 @@ app.get('/', (req, res) => {
   res.json([{a:3}])
 })
 
-app.get('/gettherapists', async (req, res) => {
-    
+app.get('/gettherapists', async (req, res) => {    
     const list = await dbManager.getTherapists()
     res.json(list)
   })
