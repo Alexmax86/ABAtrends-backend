@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path');
 const app = express()
 const port = 3000
 const dbManager = require('./database/dbmanager')
@@ -7,36 +8,36 @@ const dbManager = require('./database/dbmanager')
 
 
 //(async () => await console.log(asyncdb.getTherapists()))()
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
   });
+  
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json([{a:3}])
-})
 
-app.get('/gettherapists', async (req, res) => {    
+
+app.get('/api/gettherapists', async (req, res) => {    
     const list = await dbManager.getTherapists()
     res.json(list)
   })
 
-  app.get('/getpatients', async (req, res) => {
+  app.get('/api/getpatients', async (req, res) => {
     const list = await dbManager.getPatients()
     res.json(list)
   })
 
-  app.get('/gettrainingtypes', async (req, res) => {
+  app.get('/api/gettrainingtypes', async (req, res) => {
     const list = await dbManager.getTrainingTypes()
     res.json(list)
   })
 
 
 
-app.get('/getsessions', async (req, res) =>{
+app.get('/api/getsessions', async (req, res) =>{
   const {patientsids, therapistsids, startdate, enddate, trainingtype} = req.query;
   
   const parsedPIds = patientsids.split(',').map(id => parseInt(id));
@@ -66,14 +67,10 @@ app.get('/getsessions', async (req, res) =>{
   
 })
 
-app.post('/record', async (req, res) =>{
+app.post('/api/record', async (req, res) =>{
   
-  try {    
-    
-       
+  try {
     const result = dbManager.insertRecord(req.body)
-    //throw new Error('Internal server error occurred');
-    
     res.sendStatus(200);
   } catch (error) {
       // Send a 500 status code with an error message
@@ -84,12 +81,12 @@ app.post('/record', async (req, res) =>{
   
 })
 
-
-   
-  
+app.use(express.static(path.join(__dirname, 'build')));
+// Serve the React app for any other route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './build', 'index.html'));
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
-

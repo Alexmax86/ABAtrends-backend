@@ -62,7 +62,10 @@ db.serialize(() => {
         patient_id INTEGER,
         training_type_id INTEGER,
         date DATE,
-        responses INTEGER
+        responses INTEGER,
+        FOREIGN KEY (therapist_id) REFERENCES Therapists(id),
+        FOREIGN KEY (patient_id) REFERENCES Patients(id),
+        FOREIGN KEY (training_type_id) REFERENCES Training_types(id)
     );`);
 
     sessions.map(t => {
