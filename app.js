@@ -1,20 +1,25 @@
 const express = require('express')
 const path = require('path');
 const app = express()
-const port = 3000
+
 const dbManager = require('./database/dbmanager')
 //DB
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+app.listen(port);
 
 
-//(async () => await console.log(asyncdb.getTherapists()))()
-
-app.use((req, res, next) => {
+if (process.env.NODE_ENV === 'development') {
+  app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
-  });
-  
+  });  
+}
+
 
 app.use(express.json());
 
