@@ -1,6 +1,9 @@
 let deleteCounter = 0
 
 const sqlite3 = require('sqlite3').verbose();
+
+
+
 const db = new sqlite3.Database("./database/db.sqlite", (err) => {if(err) {
   console.log("Error: " + err);
 } else {
@@ -12,6 +15,11 @@ const db = new sqlite3.Database("./database/db.sqlite", (err) => {if(err) {
       }
   });
 }})
+
+//Configuring large timeout to give time to the DB to initialize before returning SQLite busy error
+const timeoutValue = 10000; 
+db.configure('busyTimeout', timeoutValue);
+
 const seed = require('./seed')
 
 function queryWrapper(query, params = []){
@@ -92,7 +100,7 @@ async function getTherapists() {
 
   async function insertRecord(obj){
     deleteCounter++
-    
+    console.log(obj)
     const query = `INSERT INTO SESSIONS (patient_id, therapist_id, training_type_id, date, responses) VALUES (?, ?, ?, ?, ?)`
     const params = [obj.patient_id, obj.therapist_id, obj.training_type_id, obj.date, obj.responses]
     
