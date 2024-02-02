@@ -10,9 +10,7 @@ const db = new sqlite3.Database("./database/db.sqlite", (err) => {if(err) {
   db.run("PRAGMA foreign_keys = ON;", (pragmaErr) => {
       if (pragmaErr) {
           console.error("Error enabling foreign keys: ", pragmaErr);
-      } else {
-          console.log("Foreign constraint keys enabled");
-      }
+      } 
   });
 }})
 
@@ -43,7 +41,7 @@ async function getTherapists() {
       return rows
     }
     catch(e){
-      return e;
+      throw e;
     }
   }
 
@@ -55,7 +53,7 @@ async function getTherapists() {
       return rows
     }
     catch(e){
-      return e;
+      throw e;
     }
   }
 
@@ -67,7 +65,7 @@ async function getTherapists() {
       return rows
     }
     catch(e){
-      return e;
+      throw e;
     }
   }
   async function getSessions(patientsIds, therapistsIds, trainingId, startDate, endDate){
@@ -95,7 +93,7 @@ async function getTherapists() {
       const rows = await queryWrapper(query, params)      
       return rows
     }
-    catch(e){return e}
+    catch(e){throw e}
   }
 
   async function insertRecord(obj){
