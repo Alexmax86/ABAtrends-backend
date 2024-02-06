@@ -15,7 +15,7 @@ const db = new sqlite3.Database("./database/db.sqlite", (err) => {if(err) {
 }})
 
 //Configuring large timeout to give time to the DB to initialize before returning SQLite busy error
-const timeoutValue = 10000; 
+const timeoutValue = 50000; 
 db.configure('busyTimeout', timeoutValue);
 
 const seed = require('./seed')
